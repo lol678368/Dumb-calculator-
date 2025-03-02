@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        #calculator {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .screen-container {
+            width: 90%;
+            background: white;
+            padding: 10px;
+            border: 2px solid #ccc;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            text-align: right;
+        }
+        .pre-result {
+            font-size: 18px;
+            color: gray;
+            margin-bottom: -5px;
+        }
+        .screen {
+            font-size: 40px;
+        }
+        .buttons {
+            width: 90%;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        button {
+            padding: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            border: none;
+            background-color: #fff;
+            box-shadow: 0 0 3px #000;
+            border-radius: 5px;
+        }
+        .equal {
+            background-color: blue;
+            color: white;
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="calculator">
+        <div class="screen-container">
+            <div class="pre-result" id="preResult">0</div>
+            <div class="screen" id="screen">0</div>
+        </div>
+        <div class="buttons">
+            <button onclick="clearScreen()">AC</button>
+            <button onclick="backspace()">←</button>
+            <button onclick="negate()">+/-</button>
+            <button onclick="appendOperator('/')">÷</button>
+
+            <button onclick="appendNumber(7)">7</button>
+            <button onclick="appendNumber(8)">8</button>
+            <button onclick="appendNumber(9)">9</button>
+            <button onclick="appendOperator('*')">×</button>
+
+            <button onclick="appendNumber(4)">4</button>
+            <button onclick="appendNumber(5)">5</button>
+            <button onclick="appendNumber(6)">6</button>
+            <button onclick="appendOperator('-')">-</button>
+
+            <button onclick="appendNumber(1)">1</button>
+            <button onclick="appendNumber(2)">2</button>
+            <button onclick="appendNumber(3)">3</button>
+            <button onclick="appendOperator('+')">+</button>
+
+            <button onclick="appendNumber(0)">0</button>
+            <button onclick="appendNumber('.')">.</button>
+            <button class="equal" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let screen = document.getElementById("screen");
+        let preResult = document.getElementById("preResult");
+        let expression = "";
+        let preNumberVisible = true;
+
+        function updateScreen() {
+            screen.innerText = expression || "0";
+            if (preNumberVisible) {
+                updatePreResult();
+            }
+        }
+
+        function appendNumber(num) {
+            expression += num;
+            updateScreen();
+        }
+
+        function appendOperator(op) {
+            expression += " " + op + " ";
+            updateScreen();
+        }
+
+        function clearScreen() {
+            expression = "";
+            updateScreen();
+            preResult.innerText = "0";
+            preNumberVisible = true;
+        }
+
+        function backspace() {
+            expression = expression.trim().slice(0, -1);
+            updateScreen();
+        }
+
+        function negate() {
+            let parts = expression.split(" ");
+            let last = parts.pop();
+            if (!isNaN(last)) {
+                last = -Number(last);
+            }
+            parts.push(last);
+            expression = parts.join(" ");
+            updateScreen();
+        }
+
+        function updatePreResult() {
+            let chance = Math.random();
+            try {
+                let result = eval(expression);
+                preResult.innerText = (chance < 0.75) ? result : "Error";
+            } catch {
+                preResult.innerText = "Error";
+            }
+        }
+
+        function calculate() {
+            preNumberVisible = false;
+            preResult.innerText = "";
+            let correctChance = 0.5;  
+
+            let responses = [
+                "Quantum physics changed the result to ",
+                "Trust me bro, this is correct: ",
+                "I asked a potato, and it said: ",
+                "Elon Musk tweeted this answer: ",
+                "NASA approved this calculation: ",
+                "Your math teacher would faint seeing: ",
+                "I divided by zero and got: ",
+                "This number just feels right: ",
+                "The answer is hidden in the matrix, it's: ",
+                "Even ChatGPT had to double-check this: ",
+                "A cat walked over my keyboard and got: ",
+                "Your brain probably knows better, but it's: ",
+                "A fortune cookie told me this: ",
+                "I rolled a dice and got: ",
+                "This answer came from another universe: ",
+                "I asked an alien, it whispered: ",
+                "Numbers are a conspiracy, but I got: ",
+                "Even Google was confused, but here's: ",
+                "The Illuminati confirmed: ",
+                "I sent this to NASA, waiting for results: "
+            ];
+
+            try {
+                let result = eval(expression);
+
+                if (Math.random() > correctChance) {  
+                    let randomOffset = Math.floor(Math.random() * 100) - 50;  
+                    result += randomOffset;
+
+                    let randomMessage = responses[Math.floor(Math.random() * responses.length)];
+                    result = randomMessage + result;
+                }
+
+                screen.innerText = result;
+            } catch {
+                screen.innerText = "Error";
+            }
+        }
+    </script>
+
+</body>
+</html>
